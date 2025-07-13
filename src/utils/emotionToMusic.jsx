@@ -1,7 +1,7 @@
 // utils/emotionToMusic.js
 export const emotionToMusic = {
-happy: 'https://www.youtube.com/watch?v=tnlnqTRV5ZQ',
-  sad: 'https://www.youtube.com/watch?v=ho9rZjlsyYY',   // Sad Piano
+  happy: 'https://www.youtube.com/watch?v=rmtU1I4tuCk&list=RDGMEMHDXYb1_DDSgDsobPsOFxpA&start_radio=1',
+  sad: 'https://www.youtube.com/watch?v=r_3zVIyblLQ&list=RDr_3zVIyblLQ&start_radio=1&rv=pIvf9bOPXIw',   // Sad Piano
   angry: 'https://www.youtube.com/watch?v=XQ7z57qrZU8', // Heavy rock
   surprised: 'https://www.youtube.com/watch?v=2Vv-BfVoq4g', // Ed Sheeran
   disgusted: 'https://www.youtube.com/watch?v=6Dh-RL__uN4',

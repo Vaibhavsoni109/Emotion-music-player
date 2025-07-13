@@ -1,22 +1,23 @@
-// components/EmotionDetector.js
+// src/components/EmotionDetector.js
 import * as faceapi from 'face-api.js';
 
-export async function loadModels() {
+export const loadModels = async () => {
   const MODEL_URL = '/models';
-  await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
-  await faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL);
-}
+  await Promise.all([
+    faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+    faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL),
+  ]);
+};
 
-export async function detectEmotion(video) {
-  const detections = await faceapi
-    .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
+export const detectEmotion = async (videoEl) => {
+  const detection = await faceapi
+    .detectSingleFace(videoEl, new faceapi.TinyFaceDetectorOptions())
     .withFaceExpressions();
 
-  if (detections && detections.expressions) {
-    const emotions = detections.expressions;
-    const sorted = Object.entries(emotions).sort((a, b) => b[1] - a[1]);
-    return sorted[0][0]; // most likely emotion
+  if (detection && detection.expressions) {
+    const sorted = Object.entries(detection.expressions).sort((a, b) => b[1] - a[1]);
+    return sorted[0][0]; // e.g., "happy", "sad"
   }
 
   return null;
-}
+};

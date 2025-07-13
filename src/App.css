@@ -6,9 +6,9 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Poppins', sans-serif;
-  background: linear-gradient(to right, #ffecd2, #fcb69f);
-  color: #333;
-  height: 100vh;
+  background: linear-gradient(to right, #d4e2e1, #142024f8);
+  color: #351a1a;
+  /* height: 100vh; */
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
@@ -51,7 +51,7 @@ body {
 
 h1 {
   font-size: 2.7rem;
-  background: linear-gradient(90deg, #ff7e5f, #feb47b);
+  background: linear-gradient(90deg, #111110, #308d94);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 1rem;
@@ -59,7 +59,7 @@ h1 {
 }
 
 h2 {
-  color: #4e54c8;
+  color: #180207;
   font-size: 1.6rem;
   margin-top: 1rem;
   font-weight: 500;
@@ -113,19 +113,19 @@ footer {
 
 /* Button (Optional use for refresh or stop) */
 .button {
-  background: #ff7e5f;
-  color: white;
+  background: #d2d9e9;
+  color: rgb(121, 34, 34);
   padding: 10px 20px;
   border-radius: 12px;
   border: none;
   font-size: 1rem;
-  margin-top: 1rem;
+  margin: 1rem;
   cursor: pointer;
-  box-shadow: 0 5px 15px rgba(255, 126, 95, 0.3);
+  box-shadow: 0 15px 15px rgba(5, 35, 59, 0.3);
   transition: all 0.3s ease;
 }
 
 .button:hover {
-  background: #feb47b;
+  background: #99c997;
   transform: scale(1.05);
 }
