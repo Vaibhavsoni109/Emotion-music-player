@@ -6,5 +6,5 @@ happy: 'https://www.youtube.com/watch?v=tnlnqTRV5ZQ',
   surprised: 'https://www.youtube.com/watch?v=2Vv-BfVoq4g', // Ed Sheeran
   disgusted: 'https://www.youtube.com/watch?v=6Dh-RL__uN4',
   fearful: 'https://www.youtube.com/watch?v=kXYiU_JCYtU', // Linkin Park
-  neutral: 'https://www.youtube.com/watch?v=5qap5aO4i9A', // Lofi
+  neutral: 'https://www.youtube.com/watch?v=V8zXLMIjlcw&list=PLdEo6JVKn9gt_1Ff6p_OsvP6iJ-Z6a5Yq', // Lofi
 };
