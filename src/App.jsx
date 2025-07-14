@@ -7,8 +7,12 @@ import { emotionToMusic } from './utils/emotionToMusic';
 import { getEmotionHistory, clearEmotionHistory } from './utils/emotionHistory';
 import './App.css';
 import EmotionHistory from './components/EmotionHistory';
+import { getPlaylistFromSaavn } from './utils/savanApi';
+
 
 function App() {
+  const [emotionPlaylists, setEmotionPlaylists] = useState({});
+const [playedSongs, setPlayedSongs] = useState({});
   const [videoEl, setVideoEl] = useState(null);
   const [emotion, setEmotion] = useState('');
   const [musicUrl, setMusicUrl] = useState('');
@@ -16,25 +20,53 @@ function App() {
   const [manualMode, setManualMode] = useState(false);
   const [playerFull, setPlayerFull] = useState(false);
   const fallbackEmotions = ['happy', 'sad', 'angry', 'neutral'];
+  const [songInfo, setSongInfo] = useState(null);
+
 
   useEffect(() => {
     loadModels();
   }, []);
 
-  useEffect(() => {
-    let interval;
-    if (videoEl && cameraRunning && !manualMode) {
-      interval = setInterval(async () => {
-        const detected = await detectEmotion(videoEl);
-        if (detected && detected !== emotion) {
-          setEmotion(detected);
-          setMusicUrl(emotionToMusic[detected]);
-          addEmotionToHistory(detected);
-        }
-      }, 4000);
-    }
-    return () => clearInterval(interval);
-  }, [videoEl, cameraRunning, manualMode]);
+ // ✅ Define it OUTSIDE useEffect
+const handleDetectedEmotion = async (emo) => {
+  let playlist = emotionPlaylists[emo];
+
+  if (!playlist || playlist.length < 60) {
+    const fetched = await getPlaylistFromSaavn(emo);
+    if (fetched.length === 0) return alert("No songs found for this emotion.");
+    playlist = fetched.slice(0, 60); // ✅ Limit to 60
+    setEmotionPlaylists(prev => ({ ...prev, [emo]: playlist }));
+  }
+
+  const history = playedSongs[emo] || [];
+  const unplayed = playlist.filter(song => !history.includes(song.id));
+  const available = unplayed.length > 0 ? unplayed : playlist;
+
+  const randomSong = available[Math.floor(Math.random() * available.length)];
+
+  setEmotion(emo);
+  setMusicUrl(randomSong.audioUrl);
+  setSongInfo(randomSong);
+
+  setPlayedSongs(prev => ({
+    ...prev,
+    [emo]: [...(history.length >= 60 ? [] : history), randomSong.id],
+  }));
+};
+;
+
+
+useEffect(() => {
+  let interval;
+  if (videoEl && cameraRunning && !manualMode) {
+    interval = setInterval(async () => {
+      const detected = await detectEmotion(videoEl);
+      if (detected) handleDetectedEmotion(detected);
+    }, 4000);
+  }
+  return () => clearInterval(interval);
+}, [videoEl, cameraRunning, manualMode]);
+
 
   const toggleCamera = () => {
     if (cameraRunning) {
@@ -52,7 +84,8 @@ function App() {
 
   const handleManualEmotion = (emo) => {
     setEmotion(emo);
-    setMusicUrl(emotionToMusic[emo]);
+    
+    setMusicUrl(handleDetectedEmotion(emo));
     addEmotionToHistory(emo);
   };
 
@@ -84,13 +117,20 @@ function App() {
       {emotion && <h2>Detected Emotion: {emotion}</h2>}
 
       {musicUrl && (
-        <div className={playerFull ? 'music-player-fullscreen' : 'music-player'}>
-          {console.log(musicUrl)}
-          <MusicPlayer url={musicUrl} autoPlay fullscreen={playerFull} />
+        <div className="player">
+          <audio controls autoPlay src={musicUrl} style={{ width: '90%' }} />
+          {songInfo && (
+            <div>
+              <img src={songInfo.image} alt={songInfo.title} width={100} />
+              <h3>{songInfo.title}</h3>
+              <p>{songInfo.artist}</p>
+            </div>
+          )}
         </div>
       )}
 
-      <EmotionHistory/>
+
+      <EmotionHistory />
     </div>
   );
 }

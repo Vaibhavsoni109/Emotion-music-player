@@ -1,6 +1,8 @@
 // utils/emotionToMusic.js
+const mood = "happy hindi";
 export const emotionToMusic = {
-  happy: 'https://www.youtube.com/watch?v=rmtU1I4tuCk&list=RDGMEMHDXYb1_DDSgDsobPsOFxpA&start_radio=1',
+  
+  happy: `https://www.youtube.com/results?search_query=${encodeURIComponent(mood)}`,
   sad: 'https://www.youtube.com/watch?v=r_3zVIyblLQ&list=RDr_3zVIyblLQ&start_radio=1&rv=pIvf9bOPXIw',   // Sad Piano
   angry: 'https://www.youtube.com/watch?v=XQ7z57qrZU8', // Heavy rock
   surprised: 'https://www.youtube.com/watch?v=2Vv-BfVoq4g', // Ed Sheeran
