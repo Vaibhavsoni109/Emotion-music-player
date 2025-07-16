@@ -1,14 +1,13 @@
 import axios from 'axios';
 
-export const getPlaylistFromSaavn = async (emotion) => {
-  const query = `${emotion} hindi song`;
-
+export const getPlaylistFromSaavn = async (query) => {
   try {
     const response = await axios.get(`https://saavn.dev/api/search/songs`, {
-      params: { query, page: 1, limit: 75 }, // 🔥 Ask for 75 results
+      params: { query, page: 1, limit: 75 },
     });
+    {console.log(response)}
 
-    const rawSongs = response.data.data.results;
+    const rawSongs = response.data?.data?.results || [];
 
     const songs = rawSongs.map(song => ({
       id: song.id,
@@ -17,13 +16,13 @@ export const getPlaylistFromSaavn = async (emotion) => {
       album: song.album?.name || '',
       albumUrl: song.album?.url || '',
       duration: song.duration,
-      audioUrl: song.downloadUrl?.[4]?.url, // High quality
       image: song.image?.[2]?.url || '',
+      audioUrl: song.downloadUrl?.[4]?.url || '',
     }));
 
-    return songs.filter(song => song.audioUrl); // remove invalid entries
+    return songs.filter(song => song.audioUrl);
   } catch (error) {
-    console.error('Failed to load Saavn playlist:', error);
+    console.error('❌ Failed to fetch Saavn playlist:', error.message);
     return [];
   }
 };

@@ -18,7 +18,7 @@ const [playedSongs, setPlayedSongs] = useState({});
   const [musicUrl, setMusicUrl] = useState('');
   const [cameraRunning, setCameraRunning] = useState(true);
   const [manualMode, setManualMode] = useState(false);
-  const [playerFull, setPlayerFull] = useState(false);
+ const [selectedCategory, setSelectedCategory] = useState('hindi');
   const fallbackEmotions = ['happy', 'sad', 'angry', 'neutral'];
   const [songInfo, setSongInfo] = useState(null);
 
@@ -29,16 +29,23 @@ const [playedSongs, setPlayedSongs] = useState({});
 
  // ✅ Define it OUTSIDE useEffect
 const handleDetectedEmotion = async (emo) => {
-  let playlist = emotionPlaylists[emo];
+  if (emo == "happy")
+  {
+    emo = "Latest"
+  }
+  console.log(emo)
+  const query = `${selectedCategory} ${emo}`;
+  let playlist = emotionPlaylists[query];
+
 
   if (!playlist || playlist.length < 60) {
-    const fetched = await getPlaylistFromSaavn(emo);
-    if (fetched.length === 0) return alert("No songs found for this emotion.");
-    playlist = fetched.slice(0, 60); // ✅ Limit to 60
-    setEmotionPlaylists(prev => ({ ...prev, [emo]: playlist }));
+    const fetched = await getPlaylistFromSaavn(query);
+    if (fetched.length === 0) return alert("No songs found for this mood.");
+    playlist = fetched.slice(0, 60);
+    setEmotionPlaylists(prev => ({ ...prev, [query]: playlist }));
   }
 
-  const history = playedSongs[emo] || [];
+  const history = playedSongs[query] || [];
   const unplayed = playlist.filter(song => !history.includes(song.id));
   const available = unplayed.length > 0 ? unplayed : playlist;
 
@@ -50,9 +57,10 @@ const handleDetectedEmotion = async (emo) => {
 
   setPlayedSongs(prev => ({
     ...prev,
-    [emo]: [...(history.length >= 60 ? [] : history), randomSong.id],
+    [query]: [...(history.length >= 60 ? [] : history), randomSong.id],
   }));
 };
+
 ;
 
 
@@ -112,7 +120,23 @@ useEffect(() => {
             </button>
           ))}
         </div>
+
       )}
+      <div className="selector">
+  <label htmlFor="language">🎧 Choose Language/Category:</label>
+  <select id="language" value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
+    <option value="hindi">Hindi</option>
+    <option value="english">English</option>
+    <option value="bhojpuriLatest">Bhojpuri</option>
+    <option value="punjabiLatest">Punjabi</option>
+    <option value="hindi old">Hindi Old</option>
+    <option value="hindi latest">Hindi Latest</option>
+    <option value="romantic">Romantic</option>
+    <option value="party">Party</option>
+    <option value="Anup%20Jalota">BhaktiHindi</option>
+  </select>
+</div>
+
 
       {emotion && <h2>Detected Emotion: {emotion}</h2>}
 
@@ -121,6 +145,7 @@ useEffect(() => {
           <audio controls autoPlay src={musicUrl} style={{ width: '90%' }} />
           {songInfo && (
             <div>
+              {console.log(musicUrl)}
               <img src={songInfo.image} alt={songInfo.title} width={100} />
               <h3>{songInfo.title}</h3>
               <p>{songInfo.artist}</p>
